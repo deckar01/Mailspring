@@ -40,14 +40,20 @@ export default class MessageControls extends React.Component<MessageControlsProp
       image: 'ic-dropdown-forward.png',
       select: this._onForward,
     };
+    const viewOriginal = {
+      name: localized('Show Original'),
+      // HACK: Use a dedicated icon.
+      image: 'attachment-quicklook.png',
+      select: this._onShowOriginal,
+    };
 
     if (!this.props.message.canReplyAll()) {
-      return [reply, forward];
+      return [reply, forward, viewOriginal];
     }
     const defaultReplyType = AppEnv.config.get('core.sending.defaultReplyType');
     return defaultReplyType === 'reply-all'
-      ? [replyAll, reply, forward]
-      : [reply, replyAll, forward];
+      ? [replyAll, reply, forward, viewOriginal]
+      : [reply, replyAll, forward, viewOriginal];
   }
 
   _dropdownMenu(items) {
@@ -101,9 +107,6 @@ export default class MessageControls extends React.Component<MessageControlsProp
     // dynamically. Waiting to see if this will be used often.
     const menu = new SystemMenu();
     menu.append(new SystemMenuItem({ label: localized('Log Data'), click: this._onLogData }));
-    menu.append(
-      new SystemMenuItem({ label: localized('Show Original'), click: this._onShowOriginal })
-    );
     menu.append(
       new SystemMenuItem({
         label: localized('Copy Debug Info to Clipboard'),
